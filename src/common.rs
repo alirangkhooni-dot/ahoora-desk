@@ -2506,10 +2506,40 @@ pub fn rustdesk_interval(i: Interval) -> ThrottledInterval {
     ThrottledInterval::new(i)
 }
 
+#[cfg(target_os = "windows")]
+fn apply_ahoora_windows_defaults() {
+    const SERVER: &str = "desk.ahooraco.ir";
+    const SERVER_KEY: &str = "2PS+hBpfzNWsQMUk4BZ8k9NzFKx2gbGyx9x8OgAXVic=";
+
+    *config::APP_NAME.write().unwrap() = "Ahoora Desk".to_owned();
+    *config::EXE_RENDEZVOUS_SERVER.write().unwrap() = SERVER.to_owned();
+
+    let mut settings = config::OVERWRITE_SETTINGS.write().unwrap();
+    settings.insert(keys::OPTION_CUSTOM_RENDEZVOUS_SERVER.to_owned(), SERVER.to_owned());
+    settings.insert(keys::OPTION_RELAY_SERVER.to_owned(), SERVER.to_owned());
+    settings.insert(keys::OPTION_API_SERVER.to_owned(), String::new());
+    settings.insert(keys::OPTION_KEY.to_owned(), SERVER_KEY.to_owned());
+    drop(settings);
+
+    let mut local_settings = config::DEFAULT_LOCAL_SETTINGS.write().unwrap();
+    local_settings.insert(keys::OPTION_LANGUAGE.to_owned(), "fa".to_owned());
+    local_settings.insert(keys::OPTION_THEME.to_owned(), "light".to_owned());
+    drop(local_settings);
+
+    let mut builtin_settings = config::BUILTIN_SETTINGS.write().unwrap();
+    builtin_settings.insert(keys::OPTION_HIDE_NETWORK_SETTINGS.to_owned(), "Y".to_owned());
+    builtin_settings.insert(keys::OPTION_HIDE_SERVER_SETTINGS.to_owned(), "Y".to_owned());
+}
+
 pub fn load_custom_client() {
+    #[cfg(target_os = "windows")]
+    apply_ahoora_windows_defaults();
+
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());
+        #[cfg(target_os = "windows")]
+        apply_ahoora_windows_defaults();
         return;
     }
     let Some(path) = std::env::current_exe().map_or(None, |x| x.parent().map(|x| x.to_path_buf()))
@@ -2526,6 +2556,9 @@ pub fn load_custom_client() {
         };
         read_custom_client(&data.trim());
     }
+
+    #[cfg(target_os = "windows")]
+    apply_ahoora_windows_defaults();
 }
 
 fn read_custom_client_advanced_settings(

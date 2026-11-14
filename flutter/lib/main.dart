@@ -355,12 +355,14 @@ void _runApp(
   Widget home,
   ThemeMode themeMode,
 ) {
+  final locale = _appLocale();
   final botToastBuilder = BotToastInit();
   runApp(RefreshWrapper(
     builder: (context) => GetMaterialApp(
       navigatorKey: globalKey,
       debugShowCheckedModeBanner: false,
       title: title,
+      locale: locale,
       theme: MyTheme.lightTheme,
       darkTheme: MyTheme.darkTheme,
       themeMode: themeMode,
@@ -382,6 +384,18 @@ void _runApp(
       },
     ),
   ));
+}
+
+Locale _appLocale() {
+  final language = bind.mainGetLocalOption(key: kCommConfKeyLang);
+  if (language.isEmpty || language == 'default') {
+    return const Locale('fa');
+  }
+  final parts = language.replaceAll('_', '-').split('-');
+  return Locale.fromSubtags(
+    languageCode: parts.first.toLowerCase(),
+    countryCode: parts.length > 1 ? parts[1].toUpperCase() : null,
+  );
 }
 
 void runInstallPage() async {
@@ -495,6 +509,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         child: GetMaterialApp(
           navigatorKey: globalKey,
           debugShowCheckedModeBanner: false,
+          locale: _appLocale(),
           title: isWeb
               ? '${bind.mainGetAppNameSync()} Web Client V2 (Preview)'
               : bind.mainGetAppNameSync(),
