@@ -139,7 +139,6 @@ jobs:
   build-RustDeskTempTopMostWindow:
     needs: [validate-update-metadata-keys]
     uses: ./.github/workflows/third-party-RustDeskTempTopMostWindow.yml
-    if: ${{ !inputs.windows-only || matrix.job.platform == 'x64' }}
     strategy:
       fail-fast: false
       matrix:
@@ -161,7 +160,6 @@ jobs:
 
   build-for-windows-flutter:
     name: ${{ matrix.job.target }}
-    if: ${{ !inputs.windows-only || matrix.job.arch == 'x86_64' }}
     needs: [build-RustDeskTempTopMostWindow, generate-bridge]
     runs-on: ${{ matrix.job.os }}
     strategy:
