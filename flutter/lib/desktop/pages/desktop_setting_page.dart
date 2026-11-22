@@ -2586,6 +2586,7 @@ class _AboutState extends State<_About> {
         'myId': myId
       };
     }(), hasData: (data) {
+      final isAhooraDesk = bind.mainGetAppNameSync() == 'Ahoora-Desk';
       final license = data['license'].toString();
       final version = data['version'].toString();
       final buildDate = data['buildDate'].toString();
@@ -2595,7 +2596,41 @@ class _AboutState extends State<_About> {
       final scrollController = ScrollController();
       return SingleChildScrollView(
         controller: scrollController,
-        child: _Card(title: translate('About RustDesk'), children: [
+        child: _Card(
+            title: isAhooraDesk
+                ? 'دربارهٔ اهورا دسک'
+                : translate('About RustDesk'),
+            children: [
+          if (isAhooraDesk)
+            Container(
+              margin: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFF4E8),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFFFFD3A6)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: const [
+                  Text(
+                    'اهورا دسک',
+                    textDirection: TextDirection.rtl,
+                    style: TextStyle(
+                      color: Color(0xFFC96300),
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'راهکاری ساده برای ارتباط و پشتیبانی از راه دور، متصل به زیرساخت اختصاصی اهورا.',
+                    textDirection: TextDirection.rtl,
+                    style: TextStyle(height: 1.5),
+                  ),
+                ],
+              ),
+            ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -2615,22 +2650,24 @@ class _AboutState extends State<_About> {
               SelectionArea(
                   child: Text('${translate('ID')}: $myId')
                       .marginSymmetric(vertical: 4.0)),
-              InkWell(
-                  onTap: () {
-                    launchUrlString('https://rustdesk.com/privacy.html');
-                  },
-                  child: Text(
-                    translate('Privacy Statement'),
-                    style: linkStyle,
-                  ).marginSymmetric(vertical: 4.0)),
-              InkWell(
-                  onTap: () {
-                    launchUrlString('https://rustdesk.com');
-                  },
-                  child: Text(
-                    translate('Website'),
-                    style: linkStyle,
-                  ).marginSymmetric(vertical: 4.0)),
+              if (!isAhooraDesk)
+                InkWell(
+                    onTap: () {
+                      launchUrlString('https://rustdesk.com/privacy.html');
+                    },
+                    child: Text(
+                      translate('Privacy Statement'),
+                      style: linkStyle,
+                    ).marginSymmetric(vertical: 4.0)),
+              if (!isAhooraDesk)
+                InkWell(
+                    onTap: () {
+                      launchUrlString('https://rustdesk.com');
+                    },
+                    child: Text(
+                      translate('Website'),
+                      style: linkStyle,
+                    ).marginSymmetric(vertical: 4.0)),
               Container(
                 decoration: const BoxDecoration(color: Color(0xFF2c8cff)),
                 padding:
@@ -2646,12 +2683,13 @@ class _AboutState extends State<_About> {
                             'Copyright © ${DateTime.now().toString().substring(0, 4)} Purslane Tech Pte. Ltd.\n$license',
                             style: const TextStyle(color: Colors.white),
                           ),
-                          Text(
-                            translate('Slogan_tip'),
-                            style: TextStyle(
-                                fontWeight: FontWeight.w800,
-                                color: Colors.white),
-                          )
+                          if (!isAhooraDesk)
+                            Text(
+                              translate('Slogan_tip'),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w800,
+                                  color: Colors.white),
+                            )
                         ],
                       ),
                     ),

@@ -198,7 +198,15 @@ class _PeerCardState extends State<_PeerCard>
                               : null,
                           textAlign: peer.alias.isEmpty ? TextAlign.right : null,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: peer.alias.isEmpty && bind.isCustomClient()
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                    fontFamily: 'Vazirmatn',
+                                    fontWeight: FontWeight.w700,
+                                  )
+                              : Theme.of(context).textTheme.titleSmall,
                         )),
                       ]).marginOnly(top: isPortrait ? 0 : 2),
                       Row(
@@ -387,7 +395,15 @@ class _PeerCardState extends State<_PeerCard>
                               : null,
                           textAlign: peer.alias.isEmpty ? TextAlign.right : null,
                           overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.titleSmall,
+                          style: peer.alias.isEmpty && bind.isCustomClient()
+                              ? Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                    fontFamily: 'Vazirmatn',
+                                    fontWeight: FontWeight.w700,
+                                  )
+                              : Theme.of(context).textTheme.titleSmall,
                         )),
                       ]).paddingSymmetric(vertical: 8)),
                       checkBoxOrActionMoreLandscape(peer, isTile: false),

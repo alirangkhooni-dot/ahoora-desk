@@ -373,9 +373,21 @@ class AutocompletePeerTileState extends State<AutocompletePeerTile> {
                                                           : TextAlign.right,
                                                       overflow:
                                                           TextOverflow.ellipsis,
-                                                      style: Theme.of(context)
-                                                          .textTheme
-                                                          .titleSmall,
+                                                      style: !hasAlias &&
+                                                              bind.isCustomClient()
+                                                          ? Theme.of(context)
+                                                              .textTheme
+                                                              .titleSmall
+                                                              ?.copyWith(
+                                                                fontFamily:
+                                                                    'Vazirmatn',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w700,
+                                                              )
+                                                          : Theme.of(context)
+                                                              .textTheme
+                                                              .titleSmall,
                                                     )),
                                                     hasAlias
                                                         ? Padding(
@@ -388,7 +400,17 @@ class AutocompletePeerTileState extends State<AutocompletePeerTile> {
                                                               "($displayPeerId)",
                                                               textDirection:
                                                                   TextDirection.ltr,
-                                                              style: greyStyle,
+                                                              style: bind
+                                                                      .isCustomClient()
+                                                                  ? greyStyle
+                                                                      .copyWith(
+                                                                      fontFamily:
+                                                                          'Vazirmatn',
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w700,
+                                                                    )
+                                                                  : greyStyle,
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,

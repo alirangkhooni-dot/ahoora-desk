@@ -2511,7 +2511,7 @@ fn apply_ahoora_windows_defaults() {
     const SERVER: &str = "desk.ahooraco.ir";
     const SERVER_KEY: &str = "2PS+hBpfzNWsQMUk4BZ8k9NzFKx2gbGyx9x8OgAXVic=";
 
-    *config::APP_NAME.write().unwrap() = "Ahoora Desk".to_owned();
+    *config::APP_NAME.write().unwrap() = "Ahoora-Desk".to_owned();
     *config::EXE_RENDEZVOUS_SERVER.write().unwrap() = SERVER.to_owned();
 
     let mut settings = config::OVERWRITE_SETTINGS.write().unwrap();
