@@ -25,8 +25,9 @@ class IDTextEditingController extends TextEditingController {
 }
 
 TextSpan _localizeDigitsInSpan(TextSpan span) {
-  return span.copyWith(
+  return TextSpan(
     text: _toPersianDigits(span.text ?? ''),
+    style: span.style,
     children: span.children?.map((child) {
       return child is TextSpan ? _localizeDigitsInSpan(child) : child;
     }).toList(),
