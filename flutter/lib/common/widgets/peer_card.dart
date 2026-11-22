@@ -189,7 +189,14 @@ class _PeerCardState extends State<_PeerCard>
                         getOnline(isPortrait ? 4 : 8, peer.online),
                         Expanded(
                             child: Text(
-                          peer.alias.isEmpty ? formatID(peer.id) : peer.alias,
+                          peer.alias.isEmpty
+                              ? formatIDForDisplay(peer.id,
+                                  usePersianDigits: bind.isCustomClient())
+                              : peer.alias,
+                          textDirection: peer.alias.isEmpty
+                              ? TextDirection.ltr
+                              : null,
+                          textAlign: peer.alias.isEmpty ? TextAlign.right : null,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleSmall,
                         )),
@@ -371,7 +378,14 @@ class _PeerCardState extends State<_PeerCard>
                         getOnline(8, peer.online),
                         Expanded(
                             child: Text(
-                          peer.alias.isEmpty ? formatID(peer.id) : peer.alias,
+                          peer.alias.isEmpty
+                              ? formatIDForDisplay(peer.id,
+                                  usePersianDigits: bind.isCustomClient())
+                              : peer.alias,
+                          textDirection: peer.alias.isEmpty
+                              ? TextDirection.ltr
+                              : null,
+                          textAlign: peer.alias.isEmpty ? TextAlign.right : null,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.titleSmall,
                         )),

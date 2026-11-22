@@ -2,11 +2,35 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class IDTextEditingController extends TextEditingController {
-  IDTextEditingController({String? text}) : super(text: text);
+  IDTextEditingController({String? text, this.usePersianDigits = false})
+      : super(text: text);
+
+  final bool usePersianDigits;
 
   String get id => trimID(value.text);
 
   set id(String newID) => text = formatID(newID);
+
+  @override
+  TextSpan buildTextSpan({
+    required BuildContext context,
+    TextStyle? style,
+    required bool withComposing,
+  }) {
+    final span = super.buildTextSpan(
+        context: context, style: style, withComposing: withComposing);
+    // Localize only the rendered text; the controller value stays ASCII.
+    return usePersianDigits ? _localizeDigitsInSpan(span) : span;
+  }
+}
+
+TextSpan _localizeDigitsInSpan(TextSpan span) {
+  return span.copyWith(
+    text: _toPersianDigits(span.text ?? ''),
+    children: span.children?.map((child) {
+      return child is TextSpan ? _localizeDigitsInSpan(child) : child;
+    }).toList(),
+  );
 }
 
 class IDTextInputFormatter extends TextInputFormatter {
@@ -39,13 +63,13 @@ class IDTextInputFormatter extends TextInputFormatter {
 final _whitespace = RegExp(r'\s');
 
 String formatID(String id) {
-  String id2 = id.replaceAll(_whitespace, '');
+  String id2 = _toAsciiDigits(id.replaceAll(_whitespace, ''));
   String suffix = '';
   if (id2.endsWith(r'\r') || id2.endsWith(r'/r')) {
     suffix = id2.substring(id2.length - 2, id2.length);
     id2 = id2.substring(0, id2.length - 2);
   }
-  if (int.tryParse(id2) == null) return id;
+  if (int.tryParse(id2) == null) return _toAsciiDigits(id);
   String newID = '';
   if (id2.length <= 3) {
     newID = id2;
@@ -60,6 +84,25 @@ String formatID(String id) {
   return newID + suffix;
 }
 
-String trimID(String id) {
-  return id.replaceAll(_whitespace, '');
+String formatIDForDisplay(String id, {bool usePersianDigits = false}) {
+  final formatted = formatID(id);
+  return usePersianDigits ? _toPersianDigits(formatted) : formatted;
 }
+
+String trimID(String id) {
+  return _toAsciiDigits(id.replaceAll(_whitespace, ''));
+}
+
+String _toAsciiDigits(String value) => value.replaceAllMapped(
+      RegExp(r'[\u0660-\u0669\u06F0-\u06F9]'),
+      (match) {
+        final code = match[0]!.codeUnitAt(0);
+        final zero = code >= 0x06F0 ? 0x06F0 : 0x0660;
+        return String.fromCharCode(0x30 + code - zero);
+      },
+    );
+
+String _toPersianDigits(String value) => value.replaceAllMapped(
+      RegExp(r'[0-9]'),
+      (match) => String.fromCharCode(match[0]!.codeUnitAt(0) + 0x06F0 - 0x30),
+    );

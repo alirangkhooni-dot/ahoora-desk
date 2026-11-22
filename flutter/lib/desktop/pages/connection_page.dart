@@ -199,11 +199,13 @@ class ConnectionPage extends StatefulWidget {
 class _ConnectionPageState extends State<ConnectionPage>
     with SingleTickerProviderStateMixin, WindowListener {
   /// Controller for the id input bar.
-  final _idController = IDTextEditingController();
+  final _idController =
+      IDTextEditingController(usePersianDigits: bind.isCustomClient());
 
   final RxBool _idInputFocused = false.obs;
   final FocusNode _idFocusNode = FocusNode();
-  final TextEditingController _idEditingController = TextEditingController();
+  final IDTextEditingController _idEditingController =
+      IDTextEditingController(usePersianDigits: bind.isCustomClient());
 
   String selectedConnectionType = 'Connect';
 
@@ -451,6 +453,8 @@ class _ConnectionPageState extends State<ConnectionPage>
                           autocorrect: false,
                           enableSuggestions: false,
                           keyboardType: TextInputType.visiblePassword,
+                          textDirection: TextDirection.ltr,
+                          textAlign: TextAlign.center,
                           focusNode: fieldFocusNode,
                           style: const TextStyle(
                             fontFamily: 'WorkSans',
@@ -466,6 +470,7 @@ class _ConnectionPageState extends State<ConnectionPage>
                               hintText: _idInputFocused.value
                                   ? null
                                   : translate('Enter Remote ID'),
+                              hintTextDirection: TextDirection.rtl,
                               contentPadding: const EdgeInsets.symmetric(
                                   horizontal: 15, vertical: 13)),
                           controller: fieldTextEditingController,

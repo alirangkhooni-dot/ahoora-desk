@@ -299,6 +299,11 @@ class AutocompletePeerTileState extends State<AutocompletePeerTile> {
   @override
   Widget build(BuildContext context) {
     final double tileRadius = 5;
+    final hasAlias = widget.peer.alias.isNotEmpty;
+    final displayPeerId = formatIDForDisplay(
+      widget.peer.id,
+      usePersianDigits: bind.isCustomClient(),
+    );
     final name =
         '${widget.peer.username}${widget.peer.username.isNotEmpty && widget.peer.hostname.isNotEmpty ? '@' : ''}${widget.peer.hostname}';
     final greyStyle = TextStyle(
@@ -357,17 +362,22 @@ class AutocompletePeerTileState extends State<AutocompletePeerTile> {
                                                         8, widget.peer.online),
                                                     Expanded(
                                                         child: Text(
-                                                      widget.peer.alias.isEmpty
-                                                          ? formatID(
-                                                              widget.peer.id)
-                                                          : widget.peer.alias,
+                                                      hasAlias
+                                                          ? widget.peer.alias
+                                                          : displayPeerId,
+                                                      textDirection: hasAlias
+                                                          ? null
+                                                          : TextDirection.ltr,
+                                                      textAlign: hasAlias
+                                                          ? null
+                                                          : TextAlign.right,
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       style: Theme.of(context)
                                                           .textTheme
                                                           .titleSmall,
                                                     )),
-                                                    widget.peer.alias.isNotEmpty
+                                                    hasAlias
                                                         ? Padding(
                                                             padding:
                                                                 const EdgeInsets
@@ -375,7 +385,9 @@ class AutocompletePeerTileState extends State<AutocompletePeerTile> {
                                                                     left: 5,
                                                                     right: 5),
                                                             child: Text(
-                                                              "(${widget.peer.id})",
+                                                              "($displayPeerId)",
+                                                              textDirection:
+                                                                  TextDirection.ltr,
                                                               style: greyStyle,
                                                               overflow:
                                                                   TextOverflow
